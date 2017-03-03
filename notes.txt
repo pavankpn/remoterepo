@@ -1,0 +1,91 @@
+To disable IPV6 in linux
+
+It consists of:
+
+1. Editing /etc/sysconfig/network with the following lines: 1. NETWORKING_IPV6=no 2. IPV6INIT=no
+
+2. Editing /etc/sysctl.conf with the following lines: 1. net.ipv6.conf.all.disable_ipv6 = 1 2. net.ipv6.conf.default.disable_ipv6 = 1
+
+3. Applying the changes done in sysctl.conf with the following command: sysctl -p
+
+What If I get issues after disabling IPv6?
+
+You may get problems after disabling IPv6.
+
+Issue 1:
+
+if you get issues with SSH after disabling IPv6, do the following.
+
+Edit /etc/ssh/sshd_config file,
+
+vi /etc/ssh/sshd_config
+
+Find the line;
+
+#AddressFamily any
+And. change it to:
+
+AddressFamily inet
+or,
+
+Remove the hash mark (#) in front of the line:
+
+#ListenAddress 0.0.0.0
+Then, restart ssh to reflect the changes.
+
+systemctl restart sshd
+Issue 2:
+
+If you get problems with starting postfix after disabling IPv6, edit /etc/postfix/main.cf file;
+
+vi /etc/postfix/main.cf
+and comment out the localhost part of the config and use ipv4 loopback.
+
+#inet_interfaces = localhost
+inet_interfaces = 127.0.0.1
+That’s it. Cheers!
+
+
+SETUP JAVA
+
+DOWNLOAD JAVA
+AND UN TAR THAT FILE
+
+
+
+5.8. Verifying Which Ports Are Listening
+
+There are two basic approaches for listing the ports that are listening on the network. The less reliable approach is to query the network stack by typing commands such as netstat -an or lsof -i. This method is less reliable since these programs do not connect to the machine from the network, but rather check to see what is running on the system. 
+
+The following command issued from the console determines which ports are listening for TCP connections from the network:
+
+nmap -sT -O localhost
+
+To check if the port is associated with the official list of known services, type:
+
+cat /etc/services | grep 834
+
+Check for information about the port using netstat or lsof. To check for port 834 using netstat, use the following command:
+
+netstat -anp | grep 834
+
+The lsof command reveals similar information since it is also capable of linking open ports to services:
+
+lsof -i | grep 834
+
+
+
+If you want the path of the current executable, look at /proc/$PID/exe, which is a symlink to it
+
+0)ps -ef | grep 2927
+1) ps -auxwe | grep 2927
+2) sudo ls -l /proc/PID(2927)/exe
+3) lsof -p <PID> | grep cwd
+
+
+
+
+
+
+
+
