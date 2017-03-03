@@ -1,0 +1,9 @@
+
+04 - Dealing with Devices  procfs, sysfs, udev, and dbus
+
+Procfs  -- proc file system
+		A tale of procfs
+
+- In Unix and Linux, everything is a file.
+- Process info was put into a virtual filesystem,  /proc/
+- It was so cool, it got messy
