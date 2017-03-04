@@ -1,3 +1,94 @@
+01 - Intro
+
+02 - Integrated Hardware Devices
+- BIOS or UEFI
+- Device Layout
+- Tools
+
+BIOS - UEFI
+- Can't unplug onboard devices!
+- Some configuration is outside of the os (like Keyboard handling)
+- Usually press F1,F10,F11,Del
+	(If you don't see a message in POST, guess!)
+
+Everything is a File
+-  /dev/___
+- Files are pointers to devices
+- Hard Drives & Partitions
+ Ex: /dev/sda (Serial ATA drive no 1)	
+Common Names
+- eth0, eth1, eth2 (Ether net card)
+- sda, sdb, sdc   (Serial ATA Hard drive, USB drives also )
+- hda, hdb, hdc    (IDE Hard drives)
+- md0  (Raid Controler Device)
+- video0 (Webcams)
+  etc....
+  
+$ cd /etc/dev/
+$ ls
+ sda   Hard Disk
+ sda1  Hard Disk Partition 1
+ sda2  Hard Disk Partition 2
+ sda5  Hard Disk Partition 3
+ 
+ cdrom is simlink to sr0
+ tty  are virtual terminals
+ 
+ In Linux Drivers are in Kernel Modules.
+ $lsmod   List of active modules that are currently running on system.
+ Ex: Ac97 (Sound card drivers)
+ 
+ If hardware device is not detected then we add module to the kernel then the hardware gets detectedtected
+ to do that use below command.
+ $ modprobe - program to add and remove modules from the Linux Kernel
+   
+ 
+03 - Removable Devices
+- Mass Storage Devices
+- Coldplug VS Hotplug
+- lsusb, lspci, dmesg (Tools)
+ $lsusb  - List USB Devicess.
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 04 - Dealing with Devices  procfs, sysfs, udev, and dbus
 
