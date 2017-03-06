@@ -2,6 +2,8 @@
 
 02 - Integrated Hardware Devices
 - BIOS or UEFI
+   Basic Input Output System.
+   Unified Extensible Firmware Interface
 - Device Layout
 - Tools
 
@@ -41,60 +43,269 @@ $ ls
  If hardware device is not detected then we add module to the kernel then the hardware gets detectedtected
  to do that use below command.
  $ modprobe - program to add and remove modules from the Linux Kernel
-   
+    
  
 03 - Removable Devices
 - Mass Storage Devices
 - Coldplug VS Hotplug
 - lsusb, lspci, dmesg (Tools)
- $lsusb  - List USB Devicess.
- 
-
  
  
+ $ls 	- Shows directory listing
+ $lsmod	- List active kernel modules
+ $lsusb  - Lists USB Devicess.
+ $usb-devices - Indept Information about USB devices.
+ $lspci   - Lists PCI devices
+ $dmesg   - is used to examine or control the kernel ring buffer.
+			The default action is to display all messages from the kernel ring
+			buffer.
  
  
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
 04 - Dealing with Devices  procfs, sysfs, udev, and dbus
 
-Procfs  -- proc file system
+Procfs  -- proc file system  (/proc/)
 		A tale of procfs
 
 - In Unix and Linux, everything is a file.
 - Process info was put into a virtual filesystem,  /proc/
 - It was so cool, it got messy
+
+In Kernel 2.5
+- Sysfs (sys file system)was introduced, Specifically to contain system info (devices,etc)
+- Which led to the very nice.
+
+In Kernel 2.6
+- udev is introduced, which populates the /dev/ folder
+- far better than /dev/ was handled before.
+
+Then, dbus is born!
+
+- devices are handled in a standard way, dbus is a signalling system that tells the programs.
+
+05 - The Linux Boot Process & Initrd
+
+- BIOS/UEFI
+- MBR
+- GRUB
+- Initrd
+- Kernel  --- Running System
+
+  BIOS/UEFI
+  - post (Power on self test)
+  - Activates onboard hardware (Sound card, Ethernet card etc..)
+  - Turns things over to boot device.
+  
+  MBR
+  - Master Boot Record
+  - 512 bytes of first HD sector
+  - Contains bootloader (GRUB), and Partition Information
+  
+  GRUB (Grand Unified Boot Loader)
+  - or now GRUB2 
+  - replaces LILO (Linux Loader) previous boot loader.
+  - Runs from MBR , but can access Hard drive
+  - Launches Kernel or INITRD (Initial Ramdisk)
+  
+  Initrd
+  - Initial Ramdisk. It is loaded by GRUB. It is stripped down kernel. It resided in RAM. It has modules for most types of storage devices so it can mount the Hard disk which has kernel.
+  - Solves problem of "kitchen sink" kernels. 
+  - It is a Minimal Linux kernel, which simply detects what kernel modules to load (only required modules for existing devices only),
+    then hands off to main kernel.
+
+  Kernel -->   Desktop
+  Linux is Kernel.
+  
+  - Kernel Loads (All hardware are running)
+  - Starts init (pid 1)
+		(init is the program which starts all other programs 
+		Ex: ssh deamon, apache deamon, bash deamon,desk top manager etc...)
+
+		
+06 - Boot Time Kernel Commands and the Init System(s)
+	 (Passing commands to the kernel when the system boots up)
+  - Single mode, Disable USB, etc..
+  - SysVinit, Upstart, Systemd
+  
+   Single User mode
+   - Must be at console (Passing commands at GRUB)
+   - Can change root password
+   - Is why encrypted hard drives are a good idea! (cant change root password)
+   
+   At system startup press any key to change grup in centos
+   Press 'A' to edit kernel Arguements.
+    And add Single at the end of the "<rd_NO_DM rhgb quiet crashkernel=auto single"
+	
+	It may not work as Single user mode is disabled in some systems.
+	
+	
+   SysVinit 			Upstart							Systemd
+   
+   -runlevels			-faster startup					- Same
+   -numbered order		-start order not just 
+						  numerical						-Same
+   -lots of symlinks	- Backward Compatible			-Not as compatible
+   -Not overly efficient								-uses binary codes not just
+    start time											  scripts.
+  
+
+   Slackware  distribution uses BSDinit
+   - lots of .sh scripts
+   - sorta like a windows startup folder.
+   
+
+   SysVinit most commonly used init system.
+   runlevels 1,3,5
+   Which script has lower number will start first.one by one starting, first eth0 next apache like that.
+   
+  
+	Ubuntu came up with Upstart.
+	Several Programs start simultaneously so much faster booting.
+	
+	systemctl enable ____  is for systemd 
+	systemctl start ____  is for systemd
+	
+07 - Managing Runlevels with SysVinit
+
+	Debian/Ubuntu
+	
+	0- Halt
+	1- Single User Mode
+	2- Full, Multiuser, GUI if installed
+	3-5 Nothing
+	6- Reboot
+	
+	Centos/Suse
+	
+	0- Halt
+	1- Single User Mode
+	2- Multiuser, no net
+	3- Multiuser, with net
+	4- Not used
+	5- Multi User GUI
+	6- Reboot
+	
+	Changing Runlevels
+	
+	$telinit ___
+	$init  ____
+	
+	Ex: #telinit 5
+	
+	To check current runlevel and previous runlevel
+	
+	$runlevel
+	N 5
+	
+	Previous runlevel is N (None)
+	Current runlevel is 5
+
+    Changing the Default runlevel.
+	
+	- /etc/inittab
+	Modify initdefault
+    
+	- # vi /etc/inittab
+		id:3:initdefault:
+	
+	
+08 - Managing Boot Targets with Systemd
+
+	-Boot Targets -vs- Runlevels
+	
+	Runlevel				    Boot Target
+	0(Halt)						poweroff
+	1(Single user mode)			rescue
+	3(Multi user wth no gui)	multi-user
+	5(gui)						graphical
+	6(reboot)					reboot
+	
+		
+	-Swithcing between targets
+	 #systemctl isolate multi-user.target (To swith between modes)
+	 
+	 #systemctl get-default
+	 
+	 -Setting the default targets
+	 #systemctl set-default  graphical.target
+	
+	Locations:
+	/etc/systemd/system/
+	/usr/lib/systemd/system/
+	
+	You can usually guess by the name what they do.
+	Understanding the equivalents to runlevels is most important.	
+	
+	
+	
+09 - Proper Halting and Rebooting of Your System	
+	
+	Runleves  : Boot Targers
+	
+	telinit 0	 systemctl isolate poweroff.target
+	telinit 6	 systemctl isolate reboot.target
+	
+	
+		Optional Tools
+	
+	Sometimes telinit0 Halts the system and stays powered on.
+	
+	$halt --> Sometimes doesn't power off
+	$poweroff --> sends ACPI power off signalling so mother board shuts off.
+	$reboot --> reboots
+	$reboot -f (force) --> No! It just starts killing the processes.
+	
+		Shutdown : Wall
+		
+	echo "Message" | wall --> Sends message to all Terminals.
+	
+	#shutdown -r now (-r reboot now)
+	#shutdown -h +2  (-h halt in 2 minutes)
+	#shutdown -P 13:26 (-P poweroff at 13:26)
+	#shutdown -P +3 "Alas, The end is near!"  (Poweroff in 3 mins and Sends message to all Terminals.)
+	
+	Press Ctrl+C to cancel shutdown if time is left before system shutdowns.
+	
+   
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
