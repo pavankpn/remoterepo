@@ -1,0 +1,85 @@
+amportal stop
+
+amportal start
+
+amportal restart
+
+Toc connect to asterisk:   asterisk -r 
+
+To show commands available :  cli> ?
+
+Toc connect to asterisk verbose it show more details:   asterisk -rvvv
+
+To see Phone unreachable: Remove cable and check.
+
+All data show on Asterisk CLI> is stored in /var/log/asterisk/full  log file.
+
+To check log file.
+
+# cd /var/log/asterisk/
+# cat full | grep UNREACHABLE
+# cat full | grep 512
+
+Connect to Asterisk: 
+# asterisk -r
+
+To check version.
+CLI> core show version
+
+To check uptime.
+CLI> core show uptime
+
+To check all command  use ? at each command like.
+
+CLI> ?
+CLI> core ?
+CLI> core show ?
+
+To show Active cahnnels, active calls,
+CLI> core show channels
+
+How to know which extentions are online
+CLI> sip show peers
+
+To kow extention specifi details
+
+CLI> sip show peer 512
+
+To see SIP TRUNK detials.
+
+CLI> sip show registry
+
+CLI> exit
+
+# asterisk -rvvv
+You can check smart phone login details in console.
+
+TO see PRI
+CLI> pri show spans
+CLI> pri show span 1
+
+To check voice mails users.
+
+CLI> voicemail show users
+
+To see SIP Debugging.
+
+CLI> sip set debug on
+CLI> sip set debug off
+
+How to get information of asterisk from linux commands.
+# asterisk -rx "sip show peers"
+# asterisk -rx "sip show peers" | grep 512
+
+
+
+
+
+
+
+
+
+
+
+
+
